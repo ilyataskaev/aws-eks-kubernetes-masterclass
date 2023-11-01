@@ -13,7 +13,7 @@ on:
           - destroy
 env:
   region: 'eu-north-1'
-  cluster_name: 'eks-2023-2'
+  cluster_name: 'eks-2023'
   version: '1.27'
   vpc-cidr: '10.0.0.0/16'
 
@@ -43,7 +43,8 @@ jobs:
           chmod +x eksctl
 
       - name: Create EKS cluster
-        run: ./eksctl create cluster \
+        run: |
+          ./eksctl create cluster \
               --name ${{ env.cluster_name }} \
               --region ${{ env.region }} \
               --version ${{ env.version }} \
@@ -51,13 +52,15 @@ jobs:
               --vpc-cidr ${{ env.vpc-cidr }}
 
       - name: Associate IAM OIDC Provider
-        run: ./eksctl utils associate-iam-oidc-provider \
+        run: |
+          ./eksctl utils associate-iam-oidc-provider \
               --region  ${{ env.region }} \
               --cluster ${{ env.cluster_name }} \
               --approve
 
       - name: Create Node Group
-        run: ./eksctl create nodegroup --cluster=${{ env.cluster_name }} \
+        run: |
+          ./eksctl create nodegroup --cluster=${{ env.cluster_name }} \
               --region=${{ env.region }} \
               --name=${{ env.cluster_name }}-ng-public1 \
               --node-type=t3.medium \
