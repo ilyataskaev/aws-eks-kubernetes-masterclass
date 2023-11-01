@@ -257,7 +257,7 @@ Save the file.
 ```
 REPOSITORY_URI = 180789647333.dkr.ecr.eu-central-1.amazonaws.com/eks-devops-nginx
 EKS_KUBECTL_ROLE_ARN = arn:aws:iam::180789647333:role/EksCodeBuildKubectlRole
-EKS_CLUSTER_NAME = eksdemo1
+EKS_CLUSTER_NAME = eks-2023
 ```
 
 ### Review buildspec.yml
@@ -366,7 +366,7 @@ artifacts:
       - Add Environment Variables
       - REPOSITORY_URI = 180789647333.dkr.ecr.eu-central-1.amazonaws.com/eks-devops-nginx
       - EKS_KUBECTL_ROLE_ARN = arn:aws:iam::180789647333:role/EksCodeBuildKubectlRole
-      - EKS_CLUSTER_NAME = eksdemo1
+      - EKS_CLUSTER_NAME = eks-2023
   - **Buildspec**
     - leave to defaults
   - **Logs**

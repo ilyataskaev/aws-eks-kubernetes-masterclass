@@ -93,7 +93,7 @@ eksctl create iamserviceaccount \
     --region eu-central-1 \
     --name alb-ingress-controller \
     --namespace kube-system \
-    --cluster eksdemo1 \
+    --cluster eks-2023 \
     --attach-policy-arn arn:aws:iam::180789647333:policy/ALBIngressControllerIAMPolicy \
     --override-existing-serviceaccounts \
     --approve
@@ -102,12 +102,12 @@ eksctl create iamserviceaccount \
 ### Verify using eksctl cli
 ```
 # Get IAM Service Account
-eksctl  get iamserviceaccount --cluster eksdemo1
+eksctl  get iamserviceaccount --cluster eks-2023
 ```
 
 ### Verify CloudFormation Template eksctl created & IAM Role
 - Goto Services -> CloudFormation
-- **CFN Template Name:** eksctl-eksdemo1-addon-iamserviceaccount-kube-system-alb-ingress-controller
+- **CFN Template Name:** eksctl-eks-2023-addon-iamserviceaccount-kube-system-alb-ingress-controller
 - Click on **Resources** tab
 - Click on link in **Physical Id** to open the IAM Role
 - Verify it has **ALBIngressControllerIAMPolicy** associated
@@ -124,7 +124,7 @@ Kalyans-MacBook-Pro:aws-fargate-eks-masterclass kdaida$ kubectl describe sa alb-
 Name:                alb-ingress-controller
 Namespace:           kube-system
 Labels:              app.kubernetes.io/name=alb-ingress-controller
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-kube-Role1-1Y1T391CKSSR1
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-kube-Role1-1Y1T391CKSSR1
                      kubectl.kubernetes.io/last-applied-configuration:
                        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"labels":{"app.kubernetes.io/name":"alb-ingress-controller"},"name...
 Image pull secrets:  <none>
@@ -144,7 +144,7 @@ kubectl get deploy -n kube-system
 ```
 
 ## Step-06: Edit ALB Ingress Controller Manifest
-- Edit ALB Ingress Controller manifest and add clustername field `- --cluster-name=eksdemo1`
+- Edit ALB Ingress Controller manifest and add clustername field `- --cluster-name=eks-2023`
 ```
 # Edit Deployment
 kubectl edit deployment.apps/alb-ingress-controller -n kube-system
@@ -156,12 +156,12 @@ kubectl edit deployment.apps/alb-ingress-controller -n kube-system
         - --ingress-class=alb
         - --cluster-name=cluster-name
 
-# Replaced cluster-name with our cluster-name eksdemo1
+# Replaced cluster-name with our cluster-name eks-2023
     spec:
       containers:
       - args:
         - --ingress-class=alb
-        - --cluster-name=eksdemo1
+        - --cluster-name=eks-2023
 ```
 
 ## Step-07: Verify our ALB Ingress Controller is running.

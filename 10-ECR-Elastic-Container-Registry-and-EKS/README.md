@@ -100,7 +100,7 @@ docker push 180789647333.dkr.ecr.eu-central-1.amazonaws.com/aws-ecr-kubenginx:1.
 - Click on value in `IAM Role` field
 ```
 # Sample Role Name
-eksctl-eksdemo1-nodegroup-eksdemo-NodeInstanceRole-1U4PSS3YLALN6
+eksctl-eks-2023-nodegroup-eksdemo-NodeInstanceRole-1U4PSS3YLALN6
 ```
 - In IAM on that specific role, verify **permissions** tab
 - Policy with name `AmazonEC2ContainerRegistryReadOnly, AmazonEC2ContainerRegistryPowerUser` should be associated

@@ -9,7 +9,7 @@
 - Go to Services -> EC2 -> Worker Node EC2 Instance -> IAM Role -> Click on that role
 ```
 # Sample Role ARN
-arn:aws:iam::180789647333:role/eksctl-eksdemo1-nodegroup-eksdemo-NodeInstanceRole-1FVWZ2H3TMQ2M
+arn:aws:iam::180789647333:role/eksctl-eks-2023-nodegroup-eksdemo-NodeInstanceRole-1FVWZ2H3TMQ2M
 
 # Policy to be associated
 Associate Policy: CloudWatchAgentServerPolicy
@@ -32,7 +32,7 @@ Associate Policy: CloudWatchAgentServerPolicy
 curl -s https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/<REPLACE_CLUSTER_NAME>/;s/{{region_name}}/<REPLACE-AWS_REGION>/" | kubectl apply -f -
 
 # Replaced Cluster Name and Region
-curl -s https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/eksdemo1/;s/{{region_name}}/eu-central-1/" | kubectl apply -f -
+curl -s https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/eks-2023/;s/{{region_name}}/eu-central-1/" | kubectl apply -f -
 ```
 
 ## Verify
@@ -70,7 +70,7 @@ kubectl run --generator=run-pod/v1 apache-bench -i --tty --rm --image=httpd -- a
 ### Create Graph for Avg Node CPU Utlization
 - DashBoard Name: EKS-Performance
 - Widget Type: Bar
-- Log Group: /aws/containerinsights/eksdemo1/performance
+- Log Group: /aws/containerinsights/eks-2023/performance
 ```
 STATS avg(node_cpu_utilization) as avg_node_cpu_utilization by NodeName
 | SORT avg_node_cpu_utilization DESC
@@ -79,7 +79,7 @@ STATS avg(node_cpu_utilization) as avg_node_cpu_utilization by NodeName
 ### Container Restarts
 - DashBoard Name: EKS-Performance
 - Widget Type: Table
-- Log Group: /aws/containerinsights/eksdemo1/performance
+- Log Group: /aws/containerinsights/eks-2023/performance
 ```
 STATS avg(number_of_container_restarts) as avg_number_of_container_restarts by PodName
 | SORT avg_number_of_container_restarts DESC
@@ -88,7 +88,7 @@ STATS avg(number_of_container_restarts) as avg_number_of_container_restarts by P
 ### Cluster Node Failures
 - DashBoard Name: EKS-Performance
 - Widget Type: Table
-- Log Group: /aws/containerinsights/eksdemo1/performance
+- Log Group: /aws/containerinsights/eks-2023/performance
 ```
 stats avg(cluster_failed_node_count) as CountOfNodeFailures
 | filter Type="Cluster"
@@ -97,7 +97,7 @@ stats avg(cluster_failed_node_count) as CountOfNodeFailures
 ### CPU Usage By Container
 - DashBoard Name: EKS-Performance
 - Widget Type: Bar
-- Log Group: /aws/containerinsights/eksdemo1/performance
+- Log Group: /aws/containerinsights/eks-2023/performance
 ```
 stats pct(container_cpu_usage_total, 50) as CPUPercMedian by kubernetes.container_name
 | filter Type="Container"
@@ -106,7 +106,7 @@ stats pct(container_cpu_usage_total, 50) as CPUPercMedian by kubernetes.containe
 ### Pods Requested vs Pods Running
 - DashBoard Name: EKS-Performance
 - Widget Type: Bar
-- Log Group: /aws/containerinsights/eksdemo1/performance
+- Log Group: /aws/containerinsights/eks-2023/performance
 ```
 fields @timestamp, @message
 | sort @timestamp desc
@@ -118,7 +118,7 @@ fields @timestamp, @message
 ### Application log errors by container name
 - DashBoard Name: EKS-Performance
 - Widget Type: Bar
-- Log Group: /aws/containerinsights/eksdemo1/application
+- Log Group: /aws/containerinsights/eks-2023/application
 ```
 stats count() as countoferrors by kubernetes.container_name
 | filter stream="stderr"
@@ -132,7 +132,7 @@ stats count() as countoferrors by kubernetes.container_name
 ### Create Alarms - Node CPU Usage
 - **Specify metric and conditions**
   - **Select Metric:** Container Insights -> ClusterName -> node_cpu_utilization
-  - **Metric Name:** eksdemo1_node_cpu_utilization
+  - **Metric Name:** eks-2023_node_cpu_utilization
   - **Threshold Value:** 4
   - **Important Note:** Anything above 4% of CPU it will send a notification email, ideally it should 80% or 90% CPU but we are giving 4% CPU just for load simulation testing
 - **Configure Actions**
@@ -159,7 +159,7 @@ kubectl run --generator=run-pod/v1 apache-bench -i --tty --rm --image=httpd -- a
 curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/cluster-name/;s/{{region_name}}/cluster-region/" | kubectl delete -f -
 
 # Replace Cluster Name & Region Name
-curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/eksdemo1/;s/{{region_name}}/eu-central-1/" | kubectl delete -f -
+curl https://raw.githubusercontent.com/aws-samples/amazon-cloudwatch-container-insights/latest/k8s-deployment-manifest-templates/deployment-mode/daemonset/container-insights-monitoring/quickstart/cwagent-fluentd-quickstart.yaml | sed "s/{{cluster_name}}/eks-2023/;s/{{region_name}}/eu-central-1/" | kubectl delete -f -
 ```
 
 ## Step-11: Clean-Up Application

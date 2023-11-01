@@ -15,7 +15,7 @@
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: eksdemo1  # Name of the EKS Cluster
+  name: eks-2023  # Name of the EKS Cluster
   region: eu-central-1
 fargateProfiles:
   - name: fp-app2
@@ -42,10 +42,10 @@ eksctl create fargateprofile -f kube-manifests/01-Fargate-Advanced-Profiles/01-f
 ## Step-04:  Get list of Fargate profiles
 ```
 # List Fargate profiles
-eksctl get fargateprofile --cluster eksdemo1
+eksctl get fargateprofile --cluster eks-2023
 
 # View in yaml format
-eksctl get fargateprofile --cluster eksdemo1 -o yaml
+eksctl get fargateprofile --cluster eks-2023 -o yaml
 ```
 
 ## Step-05: Review App1, App2 and UMS Manifests
@@ -110,12 +110,12 @@ kubectl delete -R -f kube-manifests/02-Applications/
 ## Step-09: Delete Fargate Profile
 ```
 # Get list of Fargate Profiles in a cluster
-eksctl get fargateprofile --cluster eksdemo1
+eksctl get fargateprofile --cluster eks-2023
 
 # Delete Fargate Profile
 eksctl delete fargateprofile --cluster <cluster-name> --name <Fargate-Profile-Name> --wait
-eksctl delete fargateprofile --cluster eksdemo1 --name fp-app2 --wait
-eksctl delete fargateprofile --cluster eksdemo1 --name fp-ums --wait
+eksctl delete fargateprofile --cluster eks-2023 --name fp-app2 --wait
+eksctl delete fargateprofile --cluster eks-2023 --name fp-ums --wait
 
 ```
 

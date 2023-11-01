@@ -10,7 +10,7 @@
   - ALB should be **Internet** facing or **Internal**
   - Listeners (Default HTTP 80)
   - Rules (HTTP /*)
-  - Target Groups 
+  - Target Groups
     - Targets (Backends)
     - HealthCheck Settings
       - Protocol: HTTP
@@ -18,16 +18,16 @@
       - Health Check Path: /usermgmt/health-status
       - Success Codes: 200
       - Health check many other settins
-- Delete the Load Balancer      
+- Delete the Load Balancer
 
 ### Understand about ALB Ingress Annotations
-- Understand about ALB Ingress Annotations. 
+- Understand about ALB Ingress Annotations.
 - **Reference:** https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/
 
 
 
 ## Step-03: Create ALB kubernetes basic Ingress Manifest
-- Create a basic ALB Ingress template. 
+- Create a basic ALB Ingress template.
 - **05-ALB-Ingress-Basic.yml**
 ```yml
 # Annotations Reference:  https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/
@@ -42,7 +42,7 @@ metadata:
     kubernetes.io/ingress.class: "alb"
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Health Check Settings
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP 
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     alb.ingress.kubernetes.io/healthcheck-path: /usermgmt/health-status
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
@@ -67,7 +67,7 @@ kubectl apply -f kube-manifests/
 # Verify our UMS App is UP and Running
 kubectl get pods
 kubectl logs -f <pod-name>
-kubectl logs -f usermgmt-microservice-5c89458797-xsb64 
+kubectl logs -f usermgmt-microservice-5c89458797-xsb64
 
 # Get List of Ingress  (Make a note of Address field)
 kubectl get ingress
@@ -76,7 +76,7 @@ kubectl get ingress
 kubectl get svc
 
 # Describe Ingress Controller
-kubectl describe ingress ingress-usermgmt-restapp-service 
+kubectl describe ingress ingress-usermgmt-restapp-service
 
 # Verify ALB Ingress Controller logs
 kubectl logs -f $(kubectl get po -n kube-system | egrep -o 'alb-ingress-controller-[A-Za-z0-9-]+') -n kube-system
@@ -89,9 +89,9 @@ kubectl logs -f $(kubectl get po -n kube-system | egrep -o 'alb-ingress-controll
 07:28:39.900001       1 controller.go:217] kubebuilder/controller "msg"="Reconciler error" "error"="failed to build LoadBalancer configuration due to unable to fetch subnets. Error: WebIdentityErr: failed to retrieve credentials\ncaused by: AccessDenied: Not authorized to perform sts:AssumeRoleWithWebIdentity\n\tstatus code: 403, request id: 3d54741a-4b85-4025-ad11-73d4a3661d09"  "controller"="alb-ingress-controller" "request"={"Namespace":"default","Name":"ingress-usermgmt-restapp-service"}
 ```
 
-- **VERY VERY IMPORTANT NOTE:** Additionally if you see any errors as below, please go to VPC -> EKS VPC -> Subnets -> For both Public Subnets, add the tag as `kubernetes.io/cluster/eksdemo1 =  shared` 
+- **VERY VERY IMPORTANT NOTE:** Additionally if you see any errors as below, please go to VPC -> EKS VPC -> Subnets -> For both Public Subnets, add the tag as `kubernetes.io/cluster/eks-2023 =  shared`
 ```
-E0507 15:40:13.134304       1 controller.go:217] kubebuilder/controller "msg"="Reconciler error" "error"="failed to build LoadBalancer configuration due to failed to resolve 2 qualified subnet with at least 8 free IP Addresses for ALB. Subnets must contains these tags: 'kubernetes.io/cluster/eksdemo1': ['shared' or 'owned'] and 'kubernetes.io/role/elb': ['' or '1']. See https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/config/#subnet-auto-discovery for more details. Resolved qualified subnets: '[]'"  "controller"="alb-ingress-controller" "request"={"Namespace":"default","Name":"ingress-usermgmt-restapp-service"}
+E0507 15:40:13.134304       1 controller.go:217] kubebuilder/controller "msg"="Reconciler error" "error"="failed to build LoadBalancer configuration due to failed to resolve 2 qualified subnet with at least 8 free IP Addresses for ALB. Subnets must contains these tags: 'kubernetes.io/cluster/eks-2023': ['shared' or 'owned'] and 'kubernetes.io/role/elb': ['' or '1']. See https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/config/#subnet-auto-discovery for more details. Resolved qualified subnets: '[]'"  "controller"="alb-ingress-controller" "request"={"Namespace":"default","Name":"ingress-usermgmt-restapp-service"}
 
 ```
 

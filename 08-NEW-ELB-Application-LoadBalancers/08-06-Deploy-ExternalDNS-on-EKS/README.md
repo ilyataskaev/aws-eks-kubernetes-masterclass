@@ -70,7 +70,7 @@ eksctl create iamserviceaccount \
 eksctl create iamserviceaccount \
     --name external-dns \
     --namespace default \
-    --cluster eksdemo1 \
+    --cluster eks-2023 \
     --attach-policy-arn arn:aws:iam::180789647333:policy/AllowExternalDNSUpdates \
     --approve \
     --override-existing-serviceaccounts
@@ -98,22 +98,22 @@ Observation:
 - Now make a note of that Role ARN, this we need to update in External-DNS k8s manifest
 ```t
 # Make a note of Role ARN
-arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
+arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
 ```
 
 ### Step-03-05: Verify IAM Service Accounts using eksctl
 - You can also make a note of External DNS Role ARN from here too.
 ```t
 # List IAM Service Accounts using eksctl
-eksctl get iamserviceaccount --cluster eksdemo1
+eksctl get iamserviceaccount --cluster eks-2023
 
 # Sample Output
-Kalyans-Mac-mini:08-06-ALB-Ingress-ExternalDNS kalyanreddy$ eksctl get iamserviceaccount --cluster eksdemo1
+Kalyans-Mac-mini:08-06-ALB-Ingress-ExternalDNS kalyanreddy$ eksctl get iamserviceaccount --cluster eks-2023
 2022-02-11 09:34:39 [ℹ]  eksctl version 0.71.0
 2022-02-11 09:34:39 [ℹ]  using region eu-central-1
 NAMESPACE	NAME				ROLE ARN
-default		external-dns			arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
-kube-system	aws-load-balancer-controller	arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-kube-Role1-EFQB4C26EALH
+default		external-dns			arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
+kube-system	aws-load-balancer-controller	arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-kube-Role1-EFQB4C26EALH
 Kalyans-Mac-mini:08-06-ALB-Ingress-ExternalDNS kalyanreddy$
 ```
 
@@ -124,7 +124,7 @@ Kalyans-Mac-mini:08-06-ALB-Ingress-ExternalDNS kalyanreddy$
 ### Change-1: Line number 9: IAM Role update
   - Copy the role-arn you have made a note at the end of step-03 and replace at line no 9.
 ```yaml
-    eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
+    eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-defa-Role1-JTO29BVZMA2N
 ```
 ### Chnage-2: Line 55, 56: Commented them
 - We used eksctl to create IAM role and attached the `AllowExternalDNSUpdates` policy

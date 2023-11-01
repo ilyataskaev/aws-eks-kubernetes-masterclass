@@ -16,7 +16,7 @@
 - It will take 15 to 20 minutes to create the Cluster Control Plane
 ```
 # Create Cluster
-eksctl create cluster --name=eksdemo1 \
+eksctl create cluster --name=eks-2023 \
                       --region=eu-central-1 \
                       --zones=eu-central-1a,eu-central-1b \
                       --without-nodegroup
@@ -59,9 +59,9 @@ eksctl utils associate-iam-oidc-provider \
 - These add-ons will create the respective IAM policies for us automatically within our Node Group role.
  ```
 # Create Public Node Group
-eksctl create nodegroup --cluster=eksdemo1 \
+eksctl create nodegroup --cluster=eks-2023 \
                         --region=eu-central-1 \
-                        --name=eksdemo1-ng-public1 \
+                        --name=eks-2023-ng-public1 \
                         --node-type=t3.medium \
                         --nodes=2 \
                         --nodes-min=2 \
@@ -81,13 +81,13 @@ eksctl create nodegroup --cluster=eksdemo1 \
 
 ### Verify NodeGroup subnets to confirm EC2 Instances are in Public Subnet
 - Verify the node group subnet to ensure it created in public subnets
-  - Go to Services -> EKS -> eksdemo -> eksdemo1-ng1-public
+  - Go to Services -> EKS -> eksdemo -> eks-2023-ng1-public
   - Click on Associated subnet in **Details** tab
   - Click on **Route Table** Tab.
   - We should see that internet route via Internet Gateway (0.0.0.0/0 -> igw-xxxxxxxx)
 
 ### Verify Cluster, NodeGroup in EKS Management Console
-- Go to Services -> Elastic Kubernetes Service -> eksdemo1
+- Go to Services -> Elastic Kubernetes Service -> eks-2023
 
 ### List Worker Nodes
 ```

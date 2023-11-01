@@ -7,7 +7,7 @@
 
 ## Step-02:  Create IAM policyy
 - Go to Services -> IAM
-- Create a Policy 
+- Create a Policy
   - Select JSON tab and copy paste the below JSON
 ```json
 
@@ -35,7 +35,7 @@
   ]
 }
 ```
-  - Review the same in **Visual Editor** 
+  - Review the same in **Visual Editor**
   - Click on **Review Policy**
   - **Name:** Amazon_EBS_CSI_Driver
   - **Description:** Policy for EC2 Instances to access Elastic Block Store
@@ -47,15 +47,15 @@
 kubectl -n kube-system describe configmap aws-auth
 
 # from output check rolearn
-rolearn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-nodegroup-eksdemo-NodeInstanceRole-IJN07ZKXAWNN
+rolearn: arn:aws:iam::180789647333:role/eksctl-eks-2023-nodegroup-eksdemo-NodeInstanceRole-IJN07ZKXAWNN
 ```
-- Go to Services -> IAM -> Roles 
-- Search for role with name **eksctl-eksdemo1-nodegroup** and open it
+- Go to Services -> IAM -> Roles
+- Search for role with name **eksctl-eks-2023-nodegroup** and open it
 - Click on **Permissions** tab
 - Click on **Attach Policies**
 - Search for **Amazon_EBS_CSI_Driver** and click on **Attach Policy**
 
-## Step-04: Deploy Amazon EBS CSI Driver  
+## Step-04: Deploy Amazon EBS CSI Driver
 - Verify kubectl version, it should be 1.14 or later
 ```
 kubectl version --client --short

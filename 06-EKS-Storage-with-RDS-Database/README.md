@@ -8,13 +8,13 @@
 
 ### Review VPC of our EKS Cluster
 - Go to Services -> VPC
-- **VPC Name:**  eksctl-eksdemo1-cluster/VPC
+- **VPC Name:**  eksctl-eks-2023-cluster/VPC
 
 ### Pre-requisite-1: Create DB Security Group
 - Create security group to allow access for RDS Database on port 3306
 - Security group name: eks_rds_db_sg
 - Description: Allow access for RDS Database on Port 3306
-- VPC: eksctl-eksdemo1-cluster/VPC
+- VPC: eksctl-eks-2023-cluster/VPC
 - **Inbound Rules**
   - Type: MySQL/Aurora
   - Protocol: TPC
@@ -29,7 +29,7 @@
 - Click on **Create DB Subnet Group**
   - **Name:** eks-rds-db-subnetgroup
   - **Description:** EKS RDS DB Subnet Group
-  - **VPC:** eksctl-eksdemo1-cluster/VPC
+  - **VPC:** eksctl-eks-2023-cluster/VPC
   - **Availability Zones:** eu-central-1a, eu-central-1b
   - **Subnets:** 2 subnets in 2 AZs
   - Click on **Create**
@@ -49,7 +49,7 @@
   - **DB Instance Size:** leave to defaults
   - **Storage:** leave to defaults
   - **Connectivity**
-    - **VPC:** eksctl-eksdemo1-cluster/VPC
+    - **VPC:** eksctl-eks-2023-cluster/VPC
     - **Additional Connectivity Configuration**
       - **Subnet Group:** eks-rds-db-subnetgroup
       - **Publicyly accessible:** YES (for our learning and troubleshooting - if required)

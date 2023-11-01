@@ -1,7 +1,7 @@
-# External DNS - Used for Updating Route53 RecordSets from Kubernetes 
+# External DNS - Used for Updating Route53 RecordSets from Kubernetes
 
 ## Step-01: Introduction
-- We need to create IAM Policy, k8s Service Account & IAM Role and associate them together for external-dns pod to add or remove entries in AWS Route53 Hosted Zones. 
+- We need to create IAM Policy, k8s Service Account & IAM Role and associate them together for external-dns pod to add or remove entries in AWS Route53 Hosted Zones.
 - Update External-DNS default manifest to support our needs
 - Deploy & Verify logs
 
@@ -11,9 +11,9 @@
   - Click on **JSON** Tab and copy paste below JSON
   - Click on **Visual editor** tab to validate
   - Click on **Review Policy**
-  - **Name:** AllowExternalDNSUpdates 
+  - **Name:** AllowExternalDNSUpdates
   - **Description:** Allow access to Route53 Resources for ExternalDNS
-  - Click on **Create Policy**  
+  - Click on **Create Policy**
 
 ```json
 {
@@ -44,7 +44,7 @@
 - Make a note of Policy ARN which we will use in next step
 ```
 arn:aws:iam::180789647333:policy/AllowExternalDNSUpdates
-```  
+```
 
 
 ## Step-03: Create IAM Role, k8s Service Account & Associate IAM Policy
@@ -61,11 +61,11 @@ eksctl create iamserviceaccount \
     --approve \
     --override-existing-serviceaccounts
 
-# Replaced name, namespace, cluster, arn 
+# Replaced name, namespace, cluster, arn
 eksctl create iamserviceaccount \
     --name external-dns \
     --namespace default \
-    --cluster eksdemo1 \
+    --cluster eks-2023 \
     --attach-policy-arn arn:aws:iam::180789647333:policy/AllowExternalDNSUpdates \
     --approve \
     --override-existing-serviceaccounts
@@ -82,11 +82,11 @@ kubectl get sa external-dns
 - Click on link  in **Physical ID** field which will take us to **IAM Role** directly
 
 ### Verify IAM Role & IAM Policy
-- With above step in CFN, we will be landed in IAM Role created for external-dns. 
+- With above step in CFN, we will be landed in IAM Role created for external-dns.
 - Verify in **Permissions** tab we have a policy named **AllowExternalDNSUpdates**
 - Now make a note of that Role ARN, this we need to update in External-DNS k8s manifest
 ```
-arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role1-1O3H7ZLUED5H4
+arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-defa-Role1-1O3H7ZLUED5H4
 ```
 
 
@@ -96,14 +96,14 @@ arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role
 ### Change-1: Line number 9: IAM Role update
   - Copy the role-arn you have made a note at the end of step-03 and replace at line no 9.
 ```yml
-    eks.amazonaws.com/role-arn: arn:aws:iam::411686525067:role/eksctl-demo1-addon-iamserviceaccount-default-Role1-M7IEPRHZYLPB   
+    eks.amazonaws.com/role-arn: arn:aws:iam::411686525067:role/eksctl-demo1-addon-iamserviceaccount-default-Role1-M7IEPRHZYLPB
 ```
 ### Chnage-2: Line 55, 56: Commented them
 - We used eksctl to create IAM role and attached the `AllowExternalDNSUpdates` policy
 - We didnt use KIAM or Kube2IAM so we don't need these two lines, so commented
 ```yml
-      #annotations:  
-        #iam.amazonaws.com/role: arn:aws:iam::ACCOUNT-ID:role/IAM-SERVICE-ROLE-NAME    
+      #annotations:
+        #iam.amazonaws.com/role: arn:aws:iam::ACCOUNT-ID:role/IAM-SERVICE-ROLE-NAME
 ```
 ### Change-3: Line 65, 67: Commented them
 ```yml
@@ -127,5 +127,3 @@ kubectl get pods
 ## References
 - https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/alb-ingress.md
 - https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md
-
-

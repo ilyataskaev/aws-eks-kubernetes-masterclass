@@ -14,7 +14,7 @@ description: Learn to use AWS Network Load Balancer with Fargate Pods
 apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
-  name: eksdemo1  # Name of the EKS Cluster
+  name: eks-2023  # Name of the EKS Cluster
   region: eu-central-1
 fargateProfiles:
   - name: fp-app3
@@ -145,10 +145,10 @@ Go to Services -> EC2 -> Load Balancing -> Load Balancers
 ## Step-09: Delete Fargate Profile
 ```t
 # List Fargate Profiles
-eksctl get fargateprofile --cluster eksdemo1
+eksctl get fargateprofile --cluster eks-2023
 
 # Delete Fargate Profile
-eksctl delete fargateprofile --cluster eksdemo1 --name <Fargate-Profile-NAME> --wait
+eksctl delete fargateprofile --cluster eks-2023 --name <Fargate-Profile-NAME> --wait
 
-eksctl delete fargateprofile --cluster eksdemo1 --name  fp-app3 --wait
+eksctl delete fargateprofile --cluster eks-2023 --name  fp-app3 --wait
 ```

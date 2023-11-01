@@ -51,7 +51,7 @@ eksctl create iamserviceaccount \
 eksctl create iamserviceaccount \
     --name xray-daemon \
     --namespace default \
-    --cluster eksdemo1 \
+    --cluster eks-2023 \
     --attach-policy-arn arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess \
     --approve \
     --override-existing-serviceaccounts
@@ -65,15 +65,15 @@ kubectl get sa
 # Describe Service Account (Verify IAM Role annotated)
 kubectl describe sa xray-daemon
 
-# List IAM Roles on eksdemo1 Cluster created with eksctl
-eksctl  get iamserviceaccount --cluster eksdemo1
+# List IAM Roles on eks-2023 Cluster created with eksctl
+eksctl  get iamserviceaccount --cluster eks-2023
 ```
 
 ## Step-04: Update IAM Role ARN in xray-k8s-daemonset.yml
 ### Get AWS IAM Role ARN for xray-daemon
 ```
 # Get AWS IAM Role ARN
-eksctl  get iamserviceaccount xray-daemon --cluster eksdemo1
+eksctl  get iamserviceaccount xray-daemon --cluster eks-2023
 ```
 ### Update  xray-k8s-daemonset.yml
 - File Name: kube-manifests/01-XRay-DaemonSet/xray-k8s-daemonset.yml
@@ -87,7 +87,7 @@ metadata:
   namespace: default
   # Update IAM Role ARN created for X-Ray access
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-defa-Role1-20F5AWU2J61F
+    eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-defa-Role1-20F5AWU2J61F
 ```
 
 ### Deploy X-Ray DaemonSet on our EKS Cluster

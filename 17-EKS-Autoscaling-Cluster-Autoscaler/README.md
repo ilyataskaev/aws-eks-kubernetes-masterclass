@@ -9,10 +9,10 @@
 
 ### What will happen if we use --asg-access tag?
 - It enables IAM policy for cluster-autoscaler
-- Lets review our nodegroup IAM role for the same. 
-- Go to Services -> IAM -> Roles -> eksctl-eksdemo1-nodegroup-XXXXXX
+- Lets review our nodegroup IAM role for the same.
+- Go to Services -> IAM -> Roles -> eksctl-eks-2023-nodegroup-XXXXXX
 - Click on **Permissions** tab
-- You should see a inline policy named `eksctl-eksdemo1-nodegroup-eksdemo1-ng-private1-PolicyAutoScaling` in the list of policies associated to this role.
+- You should see a inline policy named `eksctl-eks-2023-nodegroup-eks-2023-ng-private1-PolicyAutoScaling` in the list of policies associated to this role.
 
 ## Step-03: Deploy Cluster Autoscaler
 ```
@@ -32,7 +32,7 @@ kubectl -n kube-system edit deployment.apps/cluster-autoscaler
         - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/<YOUR CLUSTER NAME>
 
 # After Change
-        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksdemo1
+        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-2023
 ```
 
 - **Add two more parameters**
@@ -51,15 +51,15 @@ kubectl -n kube-system edit deployment.apps/cluster-autoscaler
         - --cloud-provider=aws
         - --skip-nodes-with-local-storage=false
         - --expander=least-waste
-        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksdemo1
+        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-2023
         - --balance-similar-node-groups
         - --skip-nodes-with-system-pods=false
 ```
 
 ## Step-05: Set the Cluster Autoscaler Image related to our current EKS Cluster version
 - Open https://github.com/kubernetes/autoscaler/releases
-- Find our release version (example: 1.16.n) and update the same. 
-- Our Cluster version is 1.16 and our cluster autoscaler version is 1.16.5 as per above releases link 
+- Find our release version (example: 1.16.n) and update the same.
+- Our Cluster version is 1.16 and our cluster autoscaler version is 1.16.5 as per above releases link
 ```
 # Template
 # Update Cluster Autoscaler Image Version
@@ -85,7 +85,7 @@ kubectl -n kube-system get deployment.apps/cluster-autoscaler -o yaml
         - --cloud-provider=aws
         - --skip-nodes-with-local-storage=false
         - --expander=least-waste
-        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eksdemo1
+        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/eks-2023
         - --balance-similar-node-groups
         - --skip-nodes-with-system-pods=false
         image: us.gcr.io/k8s-artifacts-prod/autoscaling/cluster-autoscaler:v1.16.5
@@ -121,7 +121,7 @@ kubectl apply -f kube-manifests/
 ```
 
 ## Step-09: Cluster Scale UP: Scale our application to 30 pods
-- In 2 to 3 minutes, one after the other new nodes will added and pods will be scheduled on them. 
+- In 2 to 3 minutes, one after the other new nodes will added and pods will be scheduled on them.
 - Our max number of nodes will be 4 which we provided during nodegroup creation.
 ```
 # Terminal - 1: Keep monitoring cluster autoscaler logs
@@ -129,8 +129,8 @@ kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
 
 # Terminal - 2: Scale UP the demo application to 30 pods
 kubectl get pods
-kubectl get nodes 
-kubectl scale --replicas=30 deploy ca-demo-deployment 
+kubectl get nodes
+kubectl scale --replicas=30 deploy ca-demo-deployment
 kubectl get pods
 
 # Terminal - 2: Verify nodes
@@ -143,7 +143,7 @@ kubectl get nodes -o wide
 kubectl -n kube-system logs -f deployment.apps/cluster-autoscaler
 
 # Terminal - 2: Scale down the demo application to 1 pod
-kubectl scale --replicas=1 deploy ca-demo-deployment 
+kubectl scale --replicas=1 deploy ca-demo-deployment
 
 # Terminal - 2: Verify nodes
 kubectl get nodes -o wide

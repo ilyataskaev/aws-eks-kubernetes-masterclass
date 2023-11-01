@@ -31,7 +31,7 @@ https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
 ### Pre-requisite-2: Create EKS Cluster and Worker Nodes (if not created)
 ```t
 # Create Cluster (Section-01-02)
-eksctl create cluster --name=eksdemo1 \
+eksctl create cluster --name=eks-2023 \
                       --region=eu-central-1 \
                       --zones=eu-central-1a,eu-central-1b \
                       --version="1.21" \
@@ -50,13 +50,13 @@ eksctl utils associate-iam-oidc-provider \
 # Replace with region & cluster name (Section-01-02)
 eksctl utils associate-iam-oidc-provider \
     --region eu-central-1 \
-    --cluster eksdemo1 \
+    --cluster eks-2023 \
     --approve
 
 # Create EKS NodeGroup in VPC Private Subnets (Section-07-01)
-eksctl create nodegroup --cluster=eksdemo1 \
+eksctl create nodegroup --cluster=eks-2023 \
                         --region=eu-central-1 \
-                        --name=eksdemo1-ng-private1 \
+                        --name=eks-2023-ng-private1 \
                         --node-type=t3.medium \
                         --nodes-min=2 \
                         --nodes-max=4 \
@@ -79,17 +79,17 @@ eksctl create nodegroup --cluster=eksdemo1 \
 eksctl get cluster
 
 # Verify EKS Node Groups
-eksctl get nodegroup --cluster=eksdemo1
+eksctl get nodegroup --cluster=eks-2023
 
 # Verify if any IAM Service Accounts present in EKS Cluster
-eksctl get iamserviceaccount --cluster=eksdemo1
+eksctl get iamserviceaccount --cluster=eks-2023
 Observation:
 1. No k8s Service accounts as of now.
 
 # Configure kubeconfig for kubectl
 eksctl get cluster # TO GET CLUSTER NAME
 aws eks --region <region-code> update-kubeconfig --name <cluster_name>
-aws eks --region eu-central-1 update-kubeconfig --name eksdemo1
+aws eks --region eu-central-1 update-kubeconfig --name eks-2023
 
 # Verify EKS Nodes in EKS Cluster using kubectl
 kubectl get nodes
@@ -182,7 +182,7 @@ eksctl create iamserviceaccount \
 
 # Replaced name, cluster and policy arn (Policy arn we took note in step-02)
 eksctl create iamserviceaccount \
-  --cluster=eksdemo1 \
+  --cluster=eks-2023 \
   --namespace=kube-system \
   --name=aws-load-balancer-controller \
   --attach-policy-arn=arn:aws:iam::180789647333:policy/AWSLoadBalancerControllerIAMPolicy \
@@ -193,7 +193,7 @@ eksctl create iamserviceaccount \
 ```t
 # Sample Output for IAM Service Account creation
 Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ eksctl create iamserviceaccount \
->   --cluster=eksdemo1 \
+>   --cluster=eks-2023 \
 >   --namespace=kube-system \
 >   --name=aws-load-balancer-controller \
 >   --attach-policy-arn=arn:aws:iam::180789647333:policy/AWSLoadBalancerControllerIAMPolicy \
@@ -207,11 +207,11 @@ Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ eksctl create
     2 sequential sub-tasks: {
         create IAM role for serviceaccount "kube-system/aws-load-balancer-controller",
         create serviceaccount "kube-system/aws-load-balancer-controller",
-    } }2022-02-02 10:22:52 [ℹ]  building iamserviceaccount stack "eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
-2022-02-02 10:22:53 [ℹ]  deploying stack "eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
-2022-02-02 10:22:53 [ℹ]  waiting for CloudFormation stack "eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
-2022-02-02 10:23:10 [ℹ]  waiting for CloudFormation stack "eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
-2022-02-02 10:23:29 [ℹ]  waiting for CloudFormation stack "eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+    } }2022-02-02 10:22:52 [ℹ]  building iamserviceaccount stack "eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-02-02 10:22:53 [ℹ]  deploying stack "eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-02-02 10:22:53 [ℹ]  waiting for CloudFormation stack "eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-02-02 10:23:10 [ℹ]  waiting for CloudFormation stack "eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2022-02-02 10:23:29 [ℹ]  waiting for CloudFormation stack "eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
 2022-02-02 10:23:32 [ℹ]  created serviceaccount "kube-system/aws-load-balancer-controller"
 Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$
 ```
@@ -219,23 +219,23 @@ Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$
 ### Step-03-02: Verify using eksctl cli
 ```t
 # Get IAM Service Account
-eksctl  get iamserviceaccount --cluster eksdemo1
+eksctl  get iamserviceaccount --cluster eks-2023
 
 # Sample Output
-Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ eksctl  get iamserviceaccount --cluster eksdemo1
+Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ eksctl  get iamserviceaccount --cluster eks-2023
 2022-02-02 10:23:50 [ℹ]  eksctl version 0.82.0
 2022-02-02 10:23:50 [ℹ]  using region eu-central-1
 NAMESPACE	NAME				ROLE ARN
-kube-system	aws-load-balancer-controller	arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-kube-Role1-1244GWMVEAKEN
+kube-system	aws-load-balancer-controller	arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-kube-Role1-1244GWMVEAKEN
 Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$
 ```
 
 ### Step-03-03: Verify CloudFormation Template eksctl created & IAM Role
 - Goto Services -> CloudFormation
-- **CFN Template Name:** eksctl-eksdemo1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller
+- **CFN Template Name:** eksctl-eks-2023-addon-iamserviceaccount-kube-system-aws-load-balancer-controller
 - Click on **Resources** tab
 - Click on link in **Physical Id** to open the IAM Role
-- Verify it has **eksctl-eksdemo1-addon-iamserviceaccount-kube-Role1-WFAWGQKTAVLR** associated
+- Verify it has **eksctl-eks-2023-addon-iamserviceaccount-kube-Role1-WFAWGQKTAVLR** associated
 
 ### Step-03-04: Verify k8s Service Account using kubectl
 ```t
@@ -256,7 +256,7 @@ Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ kubectl descr
 Name:                aws-load-balancer-controller
 Namespace:           kube-system
 Labels:              app.kubernetes.io/managed-by=eksctl
-Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eksdemo1-addon-iamserviceaccount-kube-Role1-1244GWMVEAKEN
+Annotations:         eks.amazonaws.com/role-arn: arn:aws:iam::180789647333:role/eksctl-eks-2023-addon-iamserviceaccount-kube-Role1-1244GWMVEAKEN
 Image pull secrets:  <none>
 Mountable secrets:   aws-load-balancer-controller-token-5w8th
 Tokens:              aws-load-balancer-controller-token-5w8th
@@ -307,7 +307,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 ## Replace Cluster Name, Region Code, VPC ID, Image Repo Account ID and Region Code
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   -n kube-system \
-  --set clusterName=eksdemo1 \
+  --set clusterName=eks-2023 \
   --set serviceAccount.create=false \
   --set serviceAccount.name=aws-load-balancer-controller \
   --set region=eu-central-1 \
@@ -319,7 +319,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 ## Sample Ouput for AWS Load Balancer Controller Install steps
 Kalyans-MacBook-Pro:08-01-Load-Balancer-Controller-Install kdaida$ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
 >   -n kube-system \
->   --set clusterName=eksdemo1 \
+>   --set clusterName=eks-2023 \
 >   --set serviceAccount.create=false \
 >   --set serviceAccount.name=aws-load-balancer-controller \
 >   --set region=eu-central-1 \
