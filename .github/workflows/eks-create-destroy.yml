@@ -1,0 +1,88 @@
+name: EKS Deploy
+
+on:
+  workflow_dispatch:
+     inputs:
+      action:
+        description: 'Action to choose for EKS Cluster'
+        required: true
+        default: 'create'
+        type: choice
+        options:
+          - create
+          - destroy
+env:
+  region: 'eu-north-1'
+  cluster_name: 'eks-2023'
+  version: '1.27'
+  vpc-cidr: '10.0.0.0/16'
+
+jobs:
+
+  eks-create:
+    if: ${{ inputs.action == 'create' }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.region }}
+
+      - uses: moia-oss/setup-eksctl@v1
+
+      - name: Create EKS cluster
+        run: eksctl create cluster \
+              --name ${{ env.cluster_name }} \
+              --region ${{ env.region }} \
+              --version ${{ env.version }} \
+              --zones ${{ env.region }}a,${{ env.region }}b \
+              --vpc-cidr ${{ env.vpc-cidr }}
+
+      - name: Associate IAM OIDC Provider
+        run: eksctl utils associate-iam-oidc-provider \
+              --region  ${{ env.region }} \
+              --cluster ${{ env.cluster_name }} \
+              --approve
+
+      - name: Create Node Group
+        run: eksctl create nodegroup --cluster=${{ env.cluster_name }} \
+              --region=${{ env.region }} \
+              --name=${{ env.cluster_name }}-ng-public1 \
+              --node-type=t3.medium \
+              --nodes=2 \
+              --nodes-min=2 \
+              --nodes-max=4 \
+              --node-volume-size=20 \
+              --ssh-access \
+              --ssh-public-key=eks \
+              --managed \
+              --asg-access \
+              --external-dns-access \
+              --full-ecr-access \
+              --appmesh-access \
+              --alb-ingress-access
+
+  eks-destroy:
+    if: ${{ inputs.action == 'destroy' }}
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.region }}
+
+      - uses: moia-oss/setup-eksctl@v1
+
+      - run: eksctl delete cluster --region=${{ env.region }} --name=${{ env.cluster_name }}

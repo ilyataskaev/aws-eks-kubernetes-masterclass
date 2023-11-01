@@ -51,7 +51,7 @@ eksctl utils associate-iam-oidc-provider \
 ```
 
 ## Step-03: Create EC2 Keypair
-- Create a new EC2 Keypair with name as `kube-demo`
+- Create a new EC2 Keypair with name as `eks`
 - This keypair we will use it when creating the EKS NodeGroup.
 - This will help us to login to the EKS Worker Nodes using Terminal.
 
@@ -68,7 +68,7 @@ eksctl create nodegroup --cluster=eks-2023 \
                         --nodes-max=4 \
                         --node-volume-size=20 \
                         --ssh-access \
-                        --ssh-public-key=kube-demo \
+                        --ssh-public-key=eks \
                         --managed \
                         --asg-access \
                         --external-dns-access \
@@ -116,11 +116,11 @@ kubectl config view --minify
 - Verify Control Plane Stack & Events
 - Verify NodeGroup Stack & Events
 
-### Login to Worker Node using Keypai kube-demo
+### Login to Worker Node using Keypai eks
 - Login to worker node
 ```
 # For MAC or Linux or Windows10
-ssh -i kube-demo.pem ec2-user@<Public-IP-of-Worker-Node>
+ssh -i eks.pem ec2-user@<Public-IP-of-Worker-Node>
 
 # For Windows 7
 Use putty
