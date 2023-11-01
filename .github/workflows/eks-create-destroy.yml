@@ -1,5 +1,5 @@
 name: EKS Deploy
-run-name: EKS ${{ inputs.action }} ${{ env.cluster_name}}
+run-name: EKS ${{ inputs.action }} ${{ inputs.cluster_name }}
 
 on:
   workflow_dispatch:
@@ -12,6 +12,10 @@ on:
         options:
           - create
           - destroy
+      cluster_name:
+        description: 'Name of the cluster'
+        required: true
+        default: 'eks-2023'
 env:
   region: 'eu-north-1'
   cluster_name: 'eks-2023'
@@ -46,7 +50,7 @@ jobs:
       - name: Create EKS cluster
         run: |
           ./eksctl create cluster \
-              --name ${{ env.cluster_name }} \
+              --name ${{ inputs.cluster_name }} \
               --region ${{ env.region }} \
               --version ${{ env.version }} \
               --zones ${{ env.region }}a,${{ env.region }}b \
@@ -57,14 +61,14 @@ jobs:
         run: |
           ./eksctl utils associate-iam-oidc-provider \
               --region  ${{ env.region }} \
-              --cluster ${{ env.cluster_name }} \
+              --cluster ${{ inputs.cluster_name }} \
               --approve
 
       - name: Create Node Group
         run: |
-          ./eksctl create nodegroup --cluster=${{ env.cluster_name }} \
+          ./eksctl create nodegroup --cluster=${{ inputs.cluster_name }} \
               --region=${{ env.region }} \
-              --name=${{ env.cluster_name }}-ng-public1 \
+              --name=${{ inputs.cluster_name }}-ng-public1 \
               --node-type=t3.medium \
               --nodes=2 \
               --nodes-min=2 \
@@ -104,8 +108,8 @@ jobs:
 
       - name: Delete NodeGroup
         run: |
-          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ env.cluster_name }} --name='ng-f24d73a7'
-          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ env.cluster_name }} --name=${{ env.cluster_name }}-ng-public1
+          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name='ng-f24d73a7'
+          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name=${{ inputs.cluster_name }}-ng-public1
 
       - name: Delete Cluster
-        run: eksctl delete cluster --region=${{ env.region }} --name=${{ env.cluster_name }}
+        run: eksctl delete cluster --region=${{ env.region }} --name=${{ inputs.cluster_name }}
