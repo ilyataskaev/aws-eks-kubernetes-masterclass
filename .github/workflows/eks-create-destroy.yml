@@ -34,10 +34,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.region }}
 
-      - uses: moia-oss/setup-eksctl@v1
+      - name: Install eksctl
+        run: |
+          ARCH=amd64
+          PLATFORM=$(uname -s)_$ARCH
+          curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+          tar -xzf eksctl_$PLATFORM.tar.gz && rm eksctl_$PLATFORM.tar.gz
+          chmod +x eksctl
 
       - name: Create EKS cluster
-        run: eksctl create cluster \
+        run: ./eksctl create cluster \
               --name ${{ env.cluster_name }} \
               --region ${{ env.region }} \
               --version ${{ env.version }} \
@@ -45,13 +51,13 @@ jobs:
               --vpc-cidr ${{ env.vpc-cidr }}
 
       - name: Associate IAM OIDC Provider
-        run: eksctl utils associate-iam-oidc-provider \
+        run: ./eksctl utils associate-iam-oidc-provider \
               --region  ${{ env.region }} \
               --cluster ${{ env.cluster_name }} \
               --approve
 
       - name: Create Node Group
-        run: eksctl create nodegroup --cluster=${{ env.cluster_name }} \
+        run: ./eksctl create nodegroup --cluster=${{ env.cluster_name }} \
               --region=${{ env.region }} \
               --name=${{ env.cluster_name }}-ng-public1 \
               --node-type=t3.medium \
@@ -83,6 +89,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.region }}
 
-      - uses: moia-oss/setup-eksctl@v1
+      - name: Install eksctl
+        run: |
+          ARCH=amd64
+          PLATFORM=$(uname -s)_$ARCH
+          curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
+          tar -xzf eksctl_$PLATFORM.tar.gz && rm eksctl_$PLATFORM.tar.gz
+          chmod +x eksctl
 
       - run: eksctl delete cluster --region=${{ env.region }} --name=${{ env.cluster_name }}
