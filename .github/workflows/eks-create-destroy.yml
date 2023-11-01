@@ -96,7 +96,6 @@ jobs:
           path: |
             /home/runner/.kube/config
 
-
   eks-destroy:
     if: ${{ inputs.action == 'destroy' }}
     runs-on: ubuntu-latest
