@@ -13,38 +13,42 @@
 
 
 ## Step-01: Create EKS Cluster using eksctl
-- It will take 15 to 20 minutes to create the Cluster Control Plane 
+- It will take 15 to 20 minutes to create the Cluster Control Plane
 ```
 # Create Cluster
 eksctl create cluster --name=eksdemo1 \
-                      --region=us-east-1 \
-                      --zones=us-east-1a,us-east-1b \
-                      --without-nodegroup 
+                      --region=eu-central-1 \
+                      --zones=eu-central-1a,eu-central-1b \
+                      --without-nodegroup
 
 # Get List of clusters
-eksctl get cluster                  
+eksctl get cluster
 ```
 
 
 ## Step-02: Create & Associate IAM OIDC Provider for our EKS Cluster
 - To enable and use AWS IAM roles for Kubernetes service accounts on our EKS cluster, we must create &  associate OIDC identity provider.
-- To do so using `eksctl` we can use the  below command. 
+
+https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
+
+- To do so using `eksctl` we can use the  below command.
 - Use latest eksctl version (as on today the latest version is `0.21.0`)
-```                   
+```
 # Template
 eksctl utils associate-iam-oidc-provider \
     --region region-code \
     --cluster <cluter-name> \
     --approve
+```
+cluster_name=eks-2023
 
+``````
 # Replace with region & cluster name
 eksctl utils associate-iam-oidc-provider \
-    --region us-east-1 \
-    --cluster eksdemo1 \
+    --region eu-central-1 \
+    --cluster eks-2023 \
     --approve
 ```
-
-
 
 ## Step-03: Create EC2 Keypair
 - Create a new EC2 Keypair with name as `kube-demo`
@@ -54,9 +58,9 @@ eksctl utils associate-iam-oidc-provider \
 ## Step-04: Create Node Group with additional Add-Ons in Public Subnets
 - These add-ons will create the respective IAM policies for us automatically within our Node Group role.
  ```
-# Create Public Node Group   
+# Create Public Node Group
 eksctl create nodegroup --cluster=eksdemo1 \
-                        --region=us-east-1 \
+                        --region=eu-central-1 \
                         --name=eksdemo1-ng-public1 \
                         --node-type=t3.medium \
                         --nodes=2 \
@@ -70,7 +74,7 @@ eksctl create nodegroup --cluster=eksdemo1 \
                         --external-dns-access \
                         --full-ecr-access \
                         --appmesh-access \
-                        --alb-ingress-access 
+                        --alb-ingress-access
 ```
 
 ## Step-05: Verify Cluster & Nodes

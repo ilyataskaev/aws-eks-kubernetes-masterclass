@@ -1,7 +1,7 @@
 # Use RDS Database for Workloads running on AWS EKS Cluster
 
 ## Step-01: Introduction
-- What are the problems with MySQL Pod & EBS CSI? 
+- What are the problems with MySQL Pod & EBS CSI?
 - How we are going to solve them using AWS RDS Database?
 
 ## Step-02: Create RDS Database
@@ -13,32 +13,32 @@
 ### Pre-requisite-1: Create DB Security Group
 - Create security group to allow access for RDS Database on port 3306
 - Security group name: eks_rds_db_sg
-- Description: Allow access for RDS Database on Port 3306 
+- Description: Allow access for RDS Database on Port 3306
 - VPC: eksctl-eksdemo1-cluster/VPC
 - **Inbound Rules**
   - Type: MySQL/Aurora
   - Protocol: TPC
   - Port: 3306
   - Source: Anywhere (0.0.0.0/0)
-  - Description: Allow access for RDS Database on Port 3306 
-- **Outbound Rules**  
+  - Description: Allow access for RDS Database on Port 3306
+- **Outbound Rules**
   - Leave to defaults
 
-### Pre-requisite-2: Create DB Subnet Group in RDS 
+### Pre-requisite-2: Create DB Subnet Group in RDS
 - Go to RDS -> Subnet Groups
 - Click on **Create DB Subnet Group**
   - **Name:** eks-rds-db-subnetgroup
   - **Description:** EKS RDS DB Subnet Group
   - **VPC:** eksctl-eksdemo1-cluster/VPC
-  - **Availability Zones:** us-east-1a, us-east-1b
+  - **Availability Zones:** eu-central-1a, eu-central-1b
   - **Subnets:** 2 subnets in 2 AZs
   - Click on **Create**
 
-### Create RDS Database 
+### Create RDS Database
 - Go to  **Services -> RDS**
 - Click on **Create Database**
   - **Choose a Database Creation Method:** Standard Create
-  - **Engine Options:** MySQL  
+  - **Engine Options:** MySQL
   - **Edition**: MySQL Community
   - **Version**: 5.7.22  (default populated)
   - **Template Size:** Free Tier
@@ -54,14 +54,14 @@
       - **Subnet Group:** eks-rds-db-subnetgroup
       - **Publicyly accessible:** YES (for our learning and troubleshooting - if required)
     - **VPC Security Group:** Create New
-      - **Name:** eks-rds-db-securitygroup    
+      - **Name:** eks-rds-db-securitygroup
     - **Availability Zone:** No Preference
-    - **Database Port:** 3306 
-  - Rest all leave to defaults                
+    - **Database Port:** 3306
+  - Rest all leave to defaults
 - Click on Create Database
 
 ### Edit Database Security to Allow Access from 0.0.0.0/0
-- Go to **EC2 -> Security Groups -> eks-rds-db-securitygroup** 
+- Go to **EC2 -> Security Groups -> eks-rds-db-securitygroup**
 - **Edit Inboud Rules**
   - **Source:** Anywhere (0.0.0.0/0)  (Allow access from everywhere for now)
 
@@ -76,7 +76,7 @@ metadata:
   name: mysql
 spec:
   type: ExternalName
-  externalName: usermgmtdb.c7hldelt9xfp.us-east-1.rds.amazonaws.com
+  externalName: usermgmtdb.c7hldelt9xfp.eu-central-1.rds.amazonaws.com
 ```
  - **Deploy Manifest**
 ```
@@ -84,7 +84,7 @@ kubectl apply -f kube-manifests/01-MySQL-externalName-Service.yml
 ```
 ## Step-04:  Connect to RDS Database using kubectl and create usermgmt schema/db
 ```
-kubectl run -it --rm --image=mysql:5.7.22 --restart=Never mysql-client -- mysql -h usermgmtdb.c7hldelt9xfp.us-east-1.rds.amazonaws.com -u dbadmin -pdbpassword11
+kubectl run -it --rm --image=mysql:5.7.22 --restart=Never mysql-client -- mysql -h usermgmtdb.c7hldelt9xfp.eu-central-1.rds.amazonaws.com -u dbadmin -pdbpassword11
 
 mysql> show schemas;
 mysql> create database usermgmt;
@@ -100,7 +100,7 @@ mysql> exit
 
 # Change To
           - name: DB_USERNAME
-            value: "dbadmin"            
+            value: "dbadmin"
 ```
 
 ## Step-06: Deploy User Management Microservice and Test
@@ -123,7 +123,7 @@ kubectl get nodes -o wide
 http://<Worker-Node-Public-Ip>:31231/usermgmt/health-status
 ```
 
-## Step-08: Clean Up 
+## Step-08: Clean Up
 ```
 # Delete all Objects created
 kubectl delete -f kube-manifests/

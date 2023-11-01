@@ -13,7 +13,7 @@ description: Learn AWS Load Balancer Controller - Ingress Internal LB
 - **File Name:** 04-ALB-Ingress-Internal-LB.yml
 ```yaml
     # Creates Internal Application Load Balancer
-    alb.ingress.kubernetes.io/scheme: internal 
+    alb.ingress.kubernetes.io/scheme: internal
 ```
 
 ## Step-03: Deploy all Application Kubernetes Manifests and Verify
@@ -32,12 +32,12 @@ kubectl get pods
 kubectl get svc
 ```
 ### Verify Load Balancer & Target Groups
-- Load Balancer -  Listeneres (Verify both 80 & 443) 
-- Load Balancer - Rules (Verify both 80 & 443 listeners) 
+- Load Balancer -  Listeneres (Verify both 80 & 443)
+- Load Balancer - Rules (Verify both 80 & 443 listeners)
 - Target Groups - Group Details (Verify Health check path)
 - Target Groups - Targets (Verify all 3 targets are healthy)
 
-## Step-04: How to test this Internal Load Balancer? 
+## Step-04: How to test this Internal Load Balancer?
 - We are going to deploy a `curl-pod` in EKS Cluster
 - We connect to that `curl-pod` in EKS Cluster and test using `curl commands` for our sample applications load balanced using this Internal Application Load Balancer
 
@@ -52,7 +52,7 @@ metadata:
 spec:
   containers:
   - name: curl
-    image: curlimages/curl 
+    image: curlimages/curl
     command: [ "sleep", "600" ]
 ```
 
@@ -69,16 +69,16 @@ curl http://google.com/
 curl <INTERNAL-INGRESS-LB-DNS>
 
 # Default Backend Curl Test
-curl internal-ingress-internal-lb-1839544354.us-east-1.elb.amazonaws.com
+curl internal-ingress-internal-lb-1839544354.eu-central-1.elb.amazonaws.com
 
 # App1 Curl Test
-curl internal-ingress-internal-lb-1839544354.us-east-1.elb.amazonaws.com/app1/index.html
+curl internal-ingress-internal-lb-1839544354.eu-central-1.elb.amazonaws.com/app1/index.html
 
 # App2 Curl Test
-curl internal-ingress-internal-lb-1839544354.us-east-1.elb.amazonaws.com/app2/index.html
+curl internal-ingress-internal-lb-1839544354.eu-central-1.elb.amazonaws.com/app2/index.html
 
 # App3 Curl Test
-curl internal-ingress-internal-lb-1839544354.us-east-1.elb.amazonaws.com
+curl internal-ingress-internal-lb-1839544354.eu-central-1.elb.amazonaws.com
 ```
 
 
@@ -88,4 +88,3 @@ curl internal-ingress-internal-lb-1839544354.us-east-1.elb.amazonaws.com
 kubectl delete -f kube-manifests/
 kubectl delete -f kube-manifests-curl/
 ```
-

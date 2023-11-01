@@ -15,12 +15,12 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 metadata:
   name: eksdemo1  # Name of the EKS Cluster
-  region: us-east-1
+  region: eu-central-1
 fargateProfiles:
   - name: fp-app3
     selectors:
       # All workloads in the "ns-app3" Kubernetes namespace will be
-      # scheduled onto Fargate:      
+      # scheduled onto Fargate:
       - namespace: ns-app3
 ```
 
@@ -47,7 +47,7 @@ kind: Deployment
 metadata:
   name: app3-nginx-deployment
   labels:
-    app: app3-nginx 
+    app: app3-nginx
   namespace: ns-app3    # Update Namespace given in Fargate Profile 01-fargate-profiles.yml
 spec:
   replicas: 1
@@ -70,7 +70,7 @@ spec:
               cpu: "500m"
             limits:
               memory: "500Mi"
-              cpu: "1000m"           
+              cpu: "1000m"
 ```
 
 ## Step-06: Deploy all kube-manifests
@@ -90,7 +90,7 @@ Obseravtion:
 
 # Verify Services
 kubectl get svc
-Observation: 
+Observation:
 1. Verify the network lb DNS name
 
 # Verify AWS Load Balancer Controller pod logs
@@ -122,8 +122,8 @@ https://nlbfargate901.stacksimplify.com
 # Delete or Undeploy kube-manifests
 kubectl delete -f kube-manifests/
 
-# Verify if NLB deleted 
-In AWS Mgmt Console, 
+# Verify if NLB deleted
+In AWS Mgmt Console,
 Go to Services -> EC2 -> Load Balancing -> Load Balancers
 ```
 
@@ -145,7 +145,7 @@ Go to Services -> EC2 -> Load Balancing -> Load Balancers
 ## Step-09: Delete Fargate Profile
 ```t
 # List Fargate Profiles
-eksctl get fargateprofile --cluster eksdemo1 
+eksctl get fargateprofile --cluster eksdemo1
 
 # Delete Fargate Profile
 eksctl delete fargateprofile --cluster eksdemo1 --name <Fargate-Profile-NAME> --wait

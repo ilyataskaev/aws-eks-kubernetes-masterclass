@@ -9,7 +9,7 @@
     - Notification Service
 
 ### Usecase Description
-- User Management **Create User API**  will call Notification service **Send Notification API** to send an email to user when we create a user. 
+- User Management **Create User API**  will call Notification service **Send Notification API** to send an email to user when we create a user.
 
 
 ### List of Docker Images used in this section
@@ -23,11 +23,11 @@
 
 ### AWS RDS Database
 - We have created AWS RDS Database as part of section [06-EKS-Storage-with-RDS-Database](/06-EKS-Storage-with-RDS-Database/README.md)
-- We even created a `externalName service: 01-MySQL-externalName-Service.yml` in our Kubernetes manifests to point to that RDS Database. 
+- We even created a `externalName service: 01-MySQL-externalName-Service.yml` in our Kubernetes manifests to point to that RDS Database.
 
 ### ALB Ingress Controller & External DNS
 - We are going to deploy a application which will also have a `ALB Ingress Service` and also will register its DNS name in Route53 using `External DNS`
-- Which means we should have both related pods running in our EKS cluster. 
+- Which means we should have both related pods running in our EKS cluster.
 - We have installed **ALB Ingress Controller** as part of section [08-01-ALB-Ingress-Install](/08-ELB-Application-LoadBalancers/08-01-ALB-Ingress-Install/README.md)
 - We have installed **External DNS** as part of section [08-06-01-Deploy-ExternalDNS-on-EKS](/08-ELB-Application-LoadBalancers/08-06-ALB-Ingress-ExternalDNS/08-06-01-Deploy-ExternalDNS-on-EKS/README.md)
 ```
@@ -46,24 +46,24 @@ kubectl get pods
 - **IAM User Name:** append the default generated name with microservice or something so we have a reference of this IAM user created for our ECS Microservice deployment
 - Download the credentials and update the same for below environment variables which you are going to provide in kubernetes manifest `04-NotificationMicroservice-Deployment.yml`
 ```
-AWS_MAIL_SERVER_HOST=email-smtp.us-east-1.amazonaws.com
+AWS_MAIL_SERVER_HOST=email-smtp.eu-central-1.amazonaws.com
 AWS_MAIL_SERVER_USERNAME=****
 AWS_MAIL_SERVER_PASSWORD=***
-AWS_MAIL_SERVER_FROM_ADDRESS= use-a-valid-email@gmail.com 
+AWS_MAIL_SERVER_FROM_ADDRESS= use-a-valid-email@gmail.com
 ```
-- **Important Note:** Environment variable AWS_MAIL_SERVER_FROM_ADDRESS value should be a **valid** email address and also verified in SES. 
+- **Important Note:** Environment variable AWS_MAIL_SERVER_FROM_ADDRESS value should be a **valid** email address and also verified in SES.
 
 ### Verfiy Email Addresses to which notifications we need to send.
-- We need two email addresses for testing Notification Service.  
+- We need two email addresses for testing Notification Service.
 -  **Email Addresses**
     - Verify a New Email Address
-    - Email Address Verification Request will be sent to that address, click on link to verify your email. 
+    - Email Address Verification Request will be sent to that address, click on link to verify your email.
     - **From Address:** stacksimplify@gmail.com (replace with your ids during verification)
     - **To Address:** dkalyanreddy@gmail.com (replace with your ids during verification)
-- **Important Note:** We need to ensure all the emails (FromAddress email) and (ToAddress emails) to be verified here. 
-    - Reference Link: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html    
+- **Important Note:** We need to ensure all the emails (FromAddress email) and (ToAddress emails) to be verified here.
+    - Reference Link: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html
 - Environment Variables
-    - AWS_MAIL_SERVER_HOST=email-smtp.us-east-1.amazonaws.com
+    - AWS_MAIL_SERVER_HOST=email-smtp.eu-central-1.amazonaws.com
     - AWS_MAIL_SERVER_USERNAME=*****
     - AWS_MAIL_SERVER_PASSWORD=*****
     - AWS_MAIL_SERVER_FROM_ADDRESS=stacksimplify@gmail.com
@@ -91,7 +91,7 @@ metadata:
   name: smtp-service
 spec:
   type: ExternalName
-  externalName: email-smtp.us-east-1.amazonaws.com
+  externalName: email-smtp.eu-central-1.amazonaws.com
 ```
 
 ## Step-06: Create Notification Microservice NodePort Service
@@ -110,14 +110,14 @@ spec:
   - port: 8096
     targetPort: 8096
 ```
-## Step-07: Update User Management Microservice Deployment Manifest with Notification Service Environment Variables. 
+## Step-07: Update User Management Microservice Deployment Manifest with Notification Service Environment Variables.
 - User Management Service new environment varibales related to Notification Microservice in addition to already which were configured related to MySQL
 - Update in `02-UserManagementMicroservice-Deployment.yml`
 ```yml
           - name: NOTIFICATION_SERVICE_HOST
             value: "notification-clusterip-service"
           - name: NOTIFICATION_SERVICE_PORT
-            value: "8096"    
+            value: "8096"
 ```
 ## Step-08: Update ALB Ingress Service Kubernetes Manifest
 - Update Ingress Service to ensure only target it is going to have is User Management Service
@@ -132,11 +132,11 @@ spec:
           - path: /* # SSL Redirect Setting
             backend:
               serviceName: ssl-redirect
-              servicePort: use-annotation                   
+              servicePort: use-annotation
           - path: /*
             backend:
               serviceName: usermgmt-restapp-nodeport-service
-              servicePort: 8095              
+              servicePort: 8095
 ```
 
 ## Step-09: Deploy Microservices manifests
@@ -173,18 +173,18 @@ https://services.kubeoncloud.com/usermgmt/notification-health-status
 https://services.kubeoncloud.com/usermgmt/notification-service-info
 ```
 
-## Step-12: Import postman project to Postman client on our desktop. 
+## Step-12: Import postman project to Postman client on our desktop.
 - Import postman project
-- Add environment url 
+- Add environment url
     - https://services.kubeoncloud.com (**Replace with your ALB DNS registered url on your environment**)
 
 ## Step-13: Test both Microservices using Postman
 ### User Management Service
 - **Create User**
     - Verify the email id to confirm account creation email received.
-- **List User**   
-    - Verify if newly created user got listed. 
-    
+- **List User**
+    - Verify if newly created user got listed.
+
 
 
 ## Step-14: Rollout New Deployment - Set Image Option
@@ -209,7 +209,7 @@ kubectl rollout undo deployment/notification-microservice
 
 # Access Application (Should see V1)
 https://services.kubeoncloud.com/usermgmt/notification-health-status
-```    
+```
 
 ## Step-15: Rollout New Deployment - kubectl Edit
 ```
@@ -261,5 +261,5 @@ https://services.kubeoncloud.com/usermgmt/notification-health-status
 
 ## Step-17: Clean-up
 ```
-kubectl delete -f kube-manifests/    
+kubectl delete -f kube-manifests/
 ```

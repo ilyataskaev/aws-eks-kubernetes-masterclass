@@ -14,7 +14,7 @@ metadata:
 spec:
   type: LoadBalancer # Regular k8s Service manifest with type as LoadBalancer
   selector:
-    app: usermgmt-restapp     
+    app: usermgmt-restapp
   ports:
   - port: 80
     targetPort: 8095
@@ -32,19 +32,19 @@ kubectl get pods
 ```
 
 ## Step-02: Verify the deployment
-- Verify if new CLB got created 
-  - Go to  Services -> EC2 -> Load Balancing -> Load Balancers 
+- Verify if new CLB got created
+  - Go to  Services -> EC2 -> Load Balancing -> Load Balancers
     - CLB should be created
-    - Copy DNS Name (Example: a85ae6e4030aa4513bd200f08f1eb9cc-7f13b3acc1bcaaa2.elb.us-east-1.amazonaws.com)
+    - Copy DNS Name (Example: a85ae6e4030aa4513bd200f08f1eb9cc-7f13b3acc1bcaaa2.elb.eu-central-1.amazonaws.com)
   - Go to  Services -> EC2 -> Load Balancing -> Target Groups
-    - Verify the health status, we should see active. 
-- **Access Application** 
+    - Verify the health status, we should see active.
+- **Access Application**
 ```
 # Access Application
 http://<NLB-DNS-NAME>/usermgmt/health-status
-```    
+```
 
-## Step-03: Clean Up 
+## Step-03: Clean Up
 ```
 # Delete all Objects created
 kubectl delete -f kube-manifests/
@@ -52,5 +52,3 @@ kubectl delete -f kube-manifests/
 # Verify current Kubernetes Objects
 kubectl get all
 ```
-
-

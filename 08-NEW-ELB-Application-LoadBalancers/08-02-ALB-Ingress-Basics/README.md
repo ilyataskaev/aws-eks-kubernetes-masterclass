@@ -46,7 +46,7 @@ metadata:
   labels:
     app: app1-nginx
   annotations:
-#Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer    
+#Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer
 #    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html
 spec:
   type: NodePort
@@ -54,7 +54,7 @@ spec:
     app: app1-nginx
   ports:
     - port: 80
-      targetPort: 80  
+      targetPort: 80
 ```
 
 ## Step-04: Review Ingress kube-manifest with Default Backend Option
@@ -73,9 +73,9 @@ metadata:
     # Ingress Core Settings
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Health Check Settings
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP 
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html    
+    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
     alb.ingress.kubernetes.io/success-codes: '200'
@@ -87,7 +87,7 @@ spec:
     service:
       name: app1-nginx-nodeport-service
       port:
-        number: 80                    
+        number: 80
 ```
 
 ## Step-05: Deploy kube-manifests and Verify
@@ -104,8 +104,8 @@ kubectl get pods
 
 # Verify Ingress (Make a note of Address field)
 kubectl get ingress
-Obsevation: 
-1. Verify the ADDRESS value, we should see something like "app1ingress-1334515506.us-east-1.elb.amazonaws.com"
+Obsevation:
+1. Verify the ADDRESS value, we should see something like "app1ingress-1334515506.eu-central-1.elb.amazonaws.com"
 
 # Describe Ingress Controller
 kubectl describe ingress ingress-nginxapp1
@@ -115,7 +115,7 @@ Observation:
 # List Services
 kubectl get svc
 
-# Verify Application Load Balancer using 
+# Verify Application Load Balancer using
 Goto AWS Mgmt Console -> Services -> EC2 -> Load Balancers
 1. Verify Listeners and Rules inside a listener
 2. Verify Target Groups
@@ -129,15 +129,15 @@ http://<INGRESS-ADDRESS-FIELD>
 http://<INGRESS-ADDRESS-FIELD>/app1/index.html
 
 # Sample from my environment (for reference only)
-http://app1ingress-154912460.us-east-1.elb.amazonaws.com
-http://app1ingress-154912460.us-east-1.elb.amazonaws.com/app1/index.html
+http://app1ingress-154912460.eu-central-1.elb.amazonaws.com
+http://app1ingress-154912460.eu-central-1.elb.amazonaws.com/app1/index.html
 
 # Verify AWS Load Balancer Controller logs
-kubectl get po -n kube-system 
-## POD1 Logs: 
+kubectl get po -n kube-system
+## POD1 Logs:
 kubectl -n kube-system logs -f <POD1-NAME>
 kubectl -n kube-system logs -f aws-load-balancer-controller-65b4f64d6c-h2vh4
-##POD2 Logs: 
+##POD2 Logs:
 kubectl -n kube-system logs -f <POD2-NAME>
 kubectl -n kube-system logs -f aws-load-balancer-controller-65b4f64d6c-t7qqb
 ```
@@ -172,9 +172,9 @@ metadata:
     # Ingress Core Settings
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Health Check Settings
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP 
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html    
+    alb.ingress.kubernetes.io/healthcheck-path: /app1/index.html
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
     alb.ingress.kubernetes.io/success-codes: '200'
@@ -190,9 +190,9 @@ spec:
             backend:
               service:
                 name: app1-nginx-nodeport-service
-                port: 
+                port:
                   number: 80
-      
+
 
 # 1. If  "spec.ingressClassName: ic-external-lb" not specified, will reference default ingress class on this kubernetes cluster
 # 2. Default Ingress class is nothing but for which ingress class we have the annotation `ingressclass.kubernetes.io/is-default-class: "true"`
@@ -212,8 +212,8 @@ kubectl get pods
 
 # Verify Ingress (Make a note of Address field)
 kubectl get ingress
-Obsevation: 
-1. Verify the ADDRESS value, we should see something like "app1ingressrules-154912460.us-east-1.elb.amazonaws.com"
+Obsevation:
+1. Verify the ADDRESS value, we should see something like "app1ingressrules-154912460.eu-central-1.elb.amazonaws.com"
 
 # Describe Ingress Controller
 kubectl describe ingress ingress-nginxapp1
@@ -223,7 +223,7 @@ Observation:
 # List Services
 kubectl get svc
 
-# Verify Application Load Balancer using 
+# Verify Application Load Balancer using
 Goto AWS Mgmt Console -> Services -> EC2 -> Load Balancers
 1. Verify Listeners and Rules inside a listener
 2. Verify Target Groups
@@ -237,11 +237,11 @@ http://<INGRESS-ADDRESS-FIELD>
 http://<INGRESS-ADDRESS-FIELD>/app1/index.html
 
 # Sample from my environment (for reference only)
-http://app1ingressrules-154912460.us-east-1.elb.amazonaws.com
-http://app1ingressrules-154912460.us-east-1.elb.amazonaws.com/app1/index.html
+http://app1ingressrules-154912460.eu-central-1.elb.amazonaws.com
+http://app1ingressrules-154912460.eu-central-1.elb.amazonaws.com/app1/index.html
 
 # Verify AWS Load Balancer Controller logs
-kubectl get po -n kube-system 
+kubectl get po -n kube-system
 kubectl logs -f aws-load-balancer-controller-794b7844dd-8hk7n -n kube-system
 ```
 
@@ -250,13 +250,10 @@ kubectl logs -f aws-load-balancer-controller-794b7844dd-8hk7n -n kube-system
 # Delete Kubernetes Resources
 kubectl delete -f 02-kube-manifests-rules/
 
-# Verify if Ingress Deleted successfully 
+# Verify if Ingress Deleted successfully
 kubectl get ingress
 Important Note: It is going to cost us heavily if we leave ALB load balancer idle without deleting it properly
 
-# Verify Application Load Balancer DELETED 
+# Verify Application Load Balancer DELETED
 Goto AWS Mgmt Console -> Services -> EC2 -> Load Balancers
 ```
-
-
-

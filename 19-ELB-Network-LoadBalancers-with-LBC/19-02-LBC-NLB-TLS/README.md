@@ -15,10 +15,10 @@ description: Learn to use AWS Network Load Balancer TLS with AWS Load Balancer C
 - **Security Policies:** https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies
 ```yaml
     # TLS
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:180789647333:certificate/d86de939-8ffd-410f-adce-0ce1f5be6e0d
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-central-1:180789647333:certificate/d86de939-8ffd-410f-adce-0ce1f5be6e0d
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: 443, # Specify this annotation if you need both TLS and non-TLS listeners on the same load balancer
     service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp 
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
 ```
 
 
@@ -32,7 +32,7 @@ kubectl get pods
 
 # Verify Services
 kubectl get svc
-Observation: 
+Observation:
 1. Verify the network lb DNS name
 
 # Verify AWS Load Balancer Controller pod logs
@@ -53,11 +53,11 @@ Observation: Should see two target groups. 1 Target group for 1 listener
 # Access Application
 # Test HTTP URL
 http://<NLB-DNS-NAME>
-http://lbc-network-lb-tls-demo-a956479ba85953f8.elb.us-east-1.amazonaws.com
+http://lbc-network-lb-tls-demo-a956479ba85953f8.elb.eu-central-1.amazonaws.com
 
 # Test HTTPS URL
 https://<NLB-DNS-NAME>
-https://lbc-network-lb-tls-demo-a956479ba85953f8.elb.us-east-1.amazonaws.com
+https://lbc-network-lb-tls-demo-a956479ba85953f8.elb.eu-central-1.amazonaws.com
 ```
 
 ## Step-04: Clean-Up
@@ -65,8 +65,8 @@ https://lbc-network-lb-tls-demo-a956479ba85953f8.elb.us-east-1.amazonaws.com
 # Delete or Undeploy kube-manifests
 kubectl delete -f kube-manifests/
 
-# Verify if NLB deleted 
-In AWS Mgmt Console, 
+# Verify if NLB deleted
+In AWS Mgmt Console,
 Go to Services -> EC2 -> Load Balancing -> Load Balancers
 ```
 
@@ -74,4 +74,3 @@ Go to Services -> EC2 -> Load Balancing -> Load Balancers
 - [Network Load Balancer](https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html)
 - [NLB Service](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/guide/service/nlb/)
 - [NLB Service Annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/guide/service/annotations/)
-

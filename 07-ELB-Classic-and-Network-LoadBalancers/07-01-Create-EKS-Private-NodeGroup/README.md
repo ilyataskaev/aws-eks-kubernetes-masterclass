@@ -21,7 +21,7 @@ eksctl delete nodegroup eksdemo1-ng-public1 --cluster eksdemo1
 
 ```
 eksctl create nodegroup --cluster=eksdemo1 \
-                        --region=us-east-1 \
+                        --region=eu-central-1 \
                         --name=eksdemo1-ng-private1 \
                         --node-type=t3.medium \
                         --nodes-min=2 \
@@ -35,7 +35,7 @@ eksctl create nodegroup --cluster=eksdemo1 \
                         --full-ecr-access \
                         --appmesh-access \
                         --alb-ingress-access \
-                        --node-private-networking                       
+                        --node-private-networking
 ```
 
 ## Step-04: Verify if Node Group created in Private Subnets

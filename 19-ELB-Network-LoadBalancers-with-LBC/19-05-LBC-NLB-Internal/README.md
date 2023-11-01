@@ -27,7 +27,7 @@ kubectl get pods
 
 # Verify Services
 kubectl get svc
-Observation: 
+Observation:
 1. Verify the network lb DNS name
 
 # Verify AWS Load Balancer Controller pod logs
@@ -38,7 +38,7 @@ kubectl -n kube-system logs -f <aws-load-balancer-controller-POD-NAME>
 Go to Services -> EC2 -> Load Balancing -> Load Balancers
 1. Verify Description Tab - DNS Name matching output of "kubectl get svc" External IP
 2. Verify Listeners Tab
-Observation:  Should see two listeners Port 80 
+Observation:  Should see two listeners Port 80
 
 Go to Services -> EC2 -> Load Balancing -> Target Groups
 1. Verify Registered targets
@@ -58,7 +58,7 @@ curl http://google.com/
 curl <INTERNAL-NETWORK-LB-DNS>
 
 # Internal Network LB Curl Test
-curl lbc-network-lb-internal-demo-7031ade4ca457080.elb.us-east-1.amazonaws.com
+curl lbc-network-lb-internal-demo-7031ade4ca457080.elb.eu-central-1.amazonaws.com
 ```
 
 
@@ -68,8 +68,8 @@ curl lbc-network-lb-internal-demo-7031ade4ca457080.elb.us-east-1.amazonaws.com
 kubectl delete -f kube-manifests/
 kubectl delete -f kube-manifests-curl/
 
-# Verify if NLB deleted 
-In AWS Mgmt Console, 
+# Verify if NLB deleted
+In AWS Mgmt Console,
 Go to Services -> EC2 -> Load Balancing -> Load Balancers
 ```
 
@@ -77,5 +77,3 @@ Go to Services -> EC2 -> Load Balancing -> Load Balancers
 - [Network Load Balancer](https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html)
 - [NLB Service](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/guide/service/nlb/)
 - [NLB Service Annotations](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.4/guide/service/annotations/)
-
-
