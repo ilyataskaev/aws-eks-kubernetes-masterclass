@@ -16,6 +16,12 @@ on:
         description: 'Name of the cluster'
         required: true
         default: 'eks-2023'
+      create_node_group:
+        description: 'Create Node Group?'
+        required: false
+        type: boolean
+        default: true
+
 env:
   region: 'eu-north-1'
   version: '1.27'
@@ -64,6 +70,7 @@ jobs:
               --approve
 
       - name: Create Node Group
+        if: ${{ inputs.create_node_group == true }}
         run: |
           ./eksctl create nodegroup --cluster=${{ inputs.cluster_name }} \
               --region=${{ env.region }} \
@@ -81,6 +88,14 @@ jobs:
               --full-ecr-access \
               --appmesh-access \
               --alb-ingress-access
+
+      # - name: Archive KubeConfig
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: test-results-linux
+      #     path: |
+      #       /home/user/.kube/config
+
 
   eks-destroy:
     if: ${{ inputs.action == 'destroy' }}
@@ -106,8 +121,8 @@ jobs:
           chmod +x eksctl
 
       - name: Delete NodeGroup
+        if: ${{ inputs.create_node_group == true }}
         run: |
-          ./eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name='ng-f24d73a7'
           ./eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name=${{ inputs.cluster_name }}-ng-public1
 
       - name: Delete Cluster
