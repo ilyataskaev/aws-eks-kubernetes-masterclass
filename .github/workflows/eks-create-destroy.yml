@@ -108,8 +108,8 @@ jobs:
 
       - name: Delete NodeGroup
         run: |
-          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name='ng-f24d73a7'
-          eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name=${{ inputs.cluster_name }}-ng-public1
+          ./eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name='ng-f24d73a7'
+          ./eksctl delete nodegroup --region=${{ env.region }} --cluster=${{ inputs.cluster_name }} --name=${{ inputs.cluster_name }}-ng-public1
 
       - name: Delete Cluster
-        run: eksctl delete cluster --region=${{ env.region }} --name=${{ inputs.cluster_name }}
+        run: ./eksctl delete cluster --region=${{ env.region }} --name=${{ inputs.cluster_name }}
