@@ -13,7 +13,7 @@ on:
           - destroy
 env:
   region: 'eu-north-1'
-  cluster_name: 'eks-2023'
+  cluster_name: 'eks-2023-2'
   version: '1.27'
   vpc-cidr: '10.0.0.0/16'
 
