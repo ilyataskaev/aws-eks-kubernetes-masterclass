@@ -89,12 +89,12 @@ jobs:
               --appmesh-access \
               --alb-ingress-access
 
-      # - name: Archive KubeConfig
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: test-results-linux
-      #     path: |
-      #       /home/user/.kube/config
+      - name: Archive KubeConfig
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results-linux
+          path: |
+            /home/runner/.kube/config
 
 
   eks-destroy:
