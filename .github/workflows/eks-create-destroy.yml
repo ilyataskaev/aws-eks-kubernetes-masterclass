@@ -26,6 +26,7 @@ env:
   region: 'eu-central-1'
   version: '1.27'
   vpc-cidr: '10.0.0.0/16'
+  kube-config-path: '/home/runner/.kube/config'
 
 jobs:
 
@@ -89,12 +90,16 @@ jobs:
               --appmesh-access \
               --alb-ingress-access
 
+      - name: Encrypt KubeConfig
+        run: |
+           gpg --batch --passphrase ${{ secrets.AWS_SECRET_KEY }} -c --cipher-algo AES256 ${{ env.kube-config-path }}
+
       - name: Archive KubeConfig
         uses: actions/upload-artifact@v2
         with:
-          name: kube-config
+          name: kube-config-gpg
           path: |
-            /home/runner/.kube/config
+            ${{ env.kube-config-path }}.gpg
 
   eks-destroy:
     if: ${{ inputs.action == 'destroy' }}
