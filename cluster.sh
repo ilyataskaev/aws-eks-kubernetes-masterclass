@@ -24,7 +24,7 @@ create_cluster() {
   local region=$2
   local version=$3
   local vpccidr=$4
-  local node-type=$5
+  local node_type=$5
 
   eksctl create cluster \
     --name $cluster_name \
@@ -60,8 +60,15 @@ create_cluster() {
 delete_cluster() {
   local cluster_name=$1
   local region=$2
-  echo $cluster_name
-  echo $region
+
+  while true; do
+      read -p "Do you really want to delete the cluster '${cluster_name}'? (Yes/No) " yn
+      case $yn in
+          [Yy]* ) break;;  # If yes, break the loop and continue with deletion
+          [Nn]* ) echo "Cluster deletion cancelled."; return;;
+          * ) echo "Please answer Yes or No.";;
+      esac
+  done
   eksctl delete nodegroup --region=$region  --cluster=${cluster_name} --name=${cluster_name}-ng-public1
   eksctl delete cluster   --region=$region  --name=${cluster_name}
 }
@@ -74,20 +81,20 @@ fi
 while getopts "c:d:" OPTKEY; do
     case "${OPTKEY}" in
         'c')
-            echo "Creating Cluster ${OPTARG}"
+            printf "Creating Cluster ${OPTARG}\n"
             create_cluster ${OPTARG} ${region} ${version} ${cidr} ${node_type}
           ;;
         'd')
-            echo "Deleting Cluster ${OPTARG}"
+            printf "Deleting Cluster ${OPTARG}\n"
             delete_cluster ${OPTARG} ${region}
           ;;
         ':')
-            echo "\nERROR: MISSING ARGUMENT for option -- ${OPTARG}"
+            printf "\nERROR: MISSING ARGUMENT for option -- ${OPTARG}"
             exit 1
             ;;
         *)
-        usage && exit 1
-        ;;
+            usage && exit 1
+            ;;
     esac
 done
 shift $((OPTIND-1))
