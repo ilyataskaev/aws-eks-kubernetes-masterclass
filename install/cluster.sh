@@ -57,6 +57,19 @@ create_cluster() {
     --alb-ingress-access
 }
 
+install_ingress_nginx() {
+  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  helm upgrade --install ingress-nginx ingress-nginx \
+    --repo https://kubernetes.github.io/ingress-nginx  \
+    --namespace ingress-nginx \
+    --create-namespace \
+    --set-string controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
+}
+
+destroy_ingress_nginx() {
+  helm uninstall ingress-nginx -n ingress-nginx
+}
+
 delete_cluster() {
   local cluster_name=$1
   local region=$2
@@ -73,6 +86,8 @@ delete_cluster() {
   eksctl delete cluster   --region=$region  --name=${cluster_name}
 }
 
+
+
 if [ $# -eq 0 ]; then
     echo "No arguments provided."
     usage
@@ -83,9 +98,12 @@ while getopts "c:d:" OPTKEY; do
         'c')
             printf "Creating Cluster ${OPTARG}\n"
             create_cluster ${OPTARG} ${region} ${version} ${cidr} ${node_type}
+            sleep 10
+            install_ingress_nginx
           ;;
         'd')
             printf "Deleting Cluster ${OPTARG}\n"
+            destroy_ingress_nginx
             delete_cluster ${OPTARG} ${region}
           ;;
         ':')

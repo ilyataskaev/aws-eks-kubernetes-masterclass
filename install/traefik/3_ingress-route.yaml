@@ -1,0 +1,18 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/dashboard`, `/dashboard/`) || PathPrefix(`/api`, `/api/`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: basic-auth
+          namespace: traefik
